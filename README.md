@@ -3,16 +3,16 @@ CWR_Common_Work_Registration
 
 
 
-from PyFileMaker import FMServer
-from grp import groupby
-import re
-fm = FMServer("Admin:JD3212@192.168.1.116:491", "catalyst 2.0", "CWR") # user:password@host, db name, layout name
-allFields = fm.doView()
-allRecords = fm.doFindAll()
-output = open("Z:\CWR\Output.txt", "w")
-recordCount = 1
-songCount = 0
-position = 0
+	from PyFileMaker import FMServer
+	from grp import groupby
+	import re
+	fm = FMServer("Admin:JD3212@192.168.1.116:491", "catalyst 2.0", "CWR") # user:password@host, db name, layout name
+	allFields = fm.doView()
+	allRecords = fm.doFindAll()
+	output = open("Z:\CWR\Output.txt", "w")
+	recordCount = 1
+	songCount = 0
+	position = 0
 
 	
 	def __init__(self, songNumber):
