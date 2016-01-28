@@ -1,5 +1,5 @@
 # CWR
-CWR_Common_Work_Registration
+CWR_Common_Work_Registration 
 
 """
 This module accesses Catalyst from the CWR table/layout, and coverts user-selected songs to CWR format
@@ -16,52 +16,6 @@ recordCount = 1
 songCount = 0
 position = 0
 
-date = re.compile(r'''
-^				#match beginning of string
-(\d{1,2})		#match one or two MONTH digits
-/				#match frontslash
-(\d{1,2})		#match one or two DATE digits
-/				#match frontslash
-(\d{4})			#match four YEAR digits
-$				#match end of string
-''' , re.VERBOSE)
-
-duration = re.compile(r'''
-^				#match beginning of string
-(\d+)			#match one or more MINUTE digits
-:				#match colin
-(\d+)			#match one or more SECOND digits
-$				#match end of string
-''' , re.VERBOSE)
-
-percent = re.compile(r'''
-^				#match beginning of string
-(\.)?			#match OPTIONAL decimal
-(\d+)			#match one or more PRE-DECIMAL digits
-.?				#match optional decimal point
-(\d+)?			#match optional DECIMAL digits
-$				#match end of string
-''', re.VERBOSE)
-
-
-
-territoryCodes = {'WOR': 'WORLD'} 
-"""
-				  'XUS': 'WORLD EXCLUDING US',
-				  'USO': 'US ONLY',
-				  'XAU': 'WORLD EXCLUDING AUSTRALIA',
-				  'XSA': 'WORLD EXCLUDING SOUTH AFRICA'}
-"""
-					  
-capacities =	{'CA': 'COMPOSER/AUTHOR',
-				 'AM': 'ADMINISTRATOR',
-				 'E' : 'ORIGINAL PUBLISHER'}
-
-societies =		{'010': 'ASCAP',
-				 '021': 'BMI',	
-				 '071': 'SESAC',
-			     '088': 'CMRRA',
-				 '052': 'PRS'}
 				 
 class Song():
 	
