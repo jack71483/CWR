@@ -452,8 +452,6 @@ position = 0
 		self.addCount()
 		self.endRecord()
 
-#"""The first line of CWR which is 'Transmission header' that starts with 'HDR' """ this is a required "cover sheet" for transmissions submitted by a participant. it will contain the file control info as well as the name of the submitter.
-
 def fileHeaderRecord(): #transmission header
 	process(0,3,'HDR') #record type
 	process(3,2,'PB') #sender type
@@ -465,8 +463,6 @@ def fileHeaderRecord(): #transmission header
 	process(80,8,getDate(0, 'currentDate'),1) #transmission date ??
 	process(88,15,'',1) #character Set ??
 	output.write("\n")
-
-#"""The 2nd line of CWR which is 'Group header 'that starts with 'GRH' """ use to indicate the presence of a group of transactions within the file. 
 
 def groupHeaderRecord(): #group header
 	process(0,3,'GRH') #GRH = group header
@@ -483,8 +479,6 @@ def groupTrailerRecord():
 	process(8,8,'%s' % songCount,0,1) #Transaction Count - the number of transactions included within this group. *Must be equal to the total number of transactions within this group (GR)
 	process(16,8,'%s' % recordCount ,0,1) #Record Count - the number of physical records included within this group. ??? *must be equal to the total number of physical records inclusive of the GRH and GRT records. (GR)
 	output.write("\n")
-
-#"""The last line of CWR which is 'Transmission Trailer' that starts with 'TRL' """ the transmission trailer record indicates the end of the transmission file. Control totals representing the number of groups, transactions, and records within the file are included on this record.
 
 def fileTrailerRecord():
 	process(0,3,'TRL')
