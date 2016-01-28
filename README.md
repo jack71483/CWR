@@ -452,89 +452,88 @@ position = 0
 		self.addCount()
 		self.endRecord()
 
-def fileHeaderRecord(): #transmission header
-	process(0,3,'HDR') #record type
-	process(3,2,'PB') #sender type
-	process(3,9, '257809238') #our CWR sender ID code is "MLM"
-	process(14,45,'MISSING LINK MUSIC LLC',1) #sender name (what is ,1 mean?)
-	process(61,5, '01.10') #EDI Standard Version Number - Indicates which version of the header and trailer records was used to create the data in the file. This field must be set to 01.10 for this version of the standard.
-	process(66,8,getDate(0, 'currentDate'),1) #Creation Date ??
-	process(74,6) #creation time ??
-	process(80,8,getDate(0, 'currentDate'),1) #transmission date ??
-	process(88,15,'',1) #character Set ??
-	output.write("\n")
+	def fileHeaderRecord(): #transmission header
+		process(0,3,'HDR') #record type
+		process(3,2,'PB') #sender type
+		process(3,9, '257809238') #our CWR sender ID code is "MLM"
+		process(14,45,'MISSING LINK MUSIC LLC',1) #sender name (what is ,1 mean?)
+		process(61,5, '01.10') #EDI Standard Version Number - Indicates which version of the header and trailer records was used to create the data in the file. This field must be set to 01.10 for this version of the standard.
+		process(66,8,getDate(0, 'currentDate'),1) #Creation Date ??
+		process(74,6) #creation time ??
+		process(80,8,getDate(0, 'currentDate'),1) #transmission date ??
+		process(88,15,'',1) #character Set ??
+		output.write("\n")
 
-def groupHeaderRecord(): #group header
-	process(0,3,'GRH') #GRH = group header
-	process(3,3,'NWR') #type of transactions. could be NWR = new work registration or REV = revised registration
-	process(6,5,'00001') #group ID ??
-	process(11,5, '02.10') #version number for this transaction - for CWR version 2.1, set to 02.10
-	process(16,10) #Batch request a unique sequential number to identify the group. this numer is managed by the submitter to identify the group amoung multiple submission files.
-	output.write("\n")
+	def groupHeaderRecord(): #group header
+		process(0,3,'GRH') #GRH = group header
+		process(3,3,'NWR') #type of transactions. could be NWR = new work registration or REV = revised registration
+		process(6,5,'00001') #group ID ??
+		process(11,5, '02.10') #version number for this transaction - for CWR version 2.1, set to 02.10
+		process(16,10) #Batch request a unique sequential number to identify the group. this numer is managed by the submitter to identify the group amoung multiple submission files.
+		output.write("\n")
 
-#"""The 2nd to last line of CWR which is 'Group Trailer' that starts with 'GRT' """ indicates the end of a group and provides both transaction and record counts for the group.
-def groupTrailerRecord():
-	process(0,3,'GRT')
-	process(3,5,'00001') #Group ID - the same group id that was present on the preceding GRH record. *must be equal to the group ID presented on the previous GRH record. (GR)
-	process(8,8,'%s' % songCount,0,1) #Transaction Count - the number of transactions included within this group. *Must be equal to the total number of transactions within this group (GR)
-	process(16,8,'%s' % recordCount ,0,1) #Record Count - the number of physical records included within this group. ??? *must be equal to the total number of physical records inclusive of the GRH and GRT records. (GR)
-	output.write("\n")
+	def groupTrailerRecord():
+		process(0,3,'GRT')
+		process(3,5,'00001') #Group ID - the same group id that was present on the preceding GRH record. *must be equal to the group ID presented on the previous GRH record. (GR)
+		process(8,8,'%s' % songCount,0,1) #Transaction Count - the number of transactions included within this group. *Must be equal to the total number of transactions within this group (GR)
+		process(16,8,'%s' % recordCount ,0,1) #Record Count - the number of physical records included within this group. ??? *must be equal to the total number of physical records inclusive of the GRH and GRT records. (GR)
+		output.write("\n")
 
-def fileTrailerRecord():
-	process(0,3,'TRL')
-	process(3,5,'00001') #Group Count - The number of groups included within this file. *group cout must be equal to the number of groups within the entire file. (ER)
-	process(8,8,'%s' % songCount,0,1) #Transacation Count - The number of transacations included within this file. * must be equal to the number of transacations within the entire file.
-	process(16,8,('%s' % recordCount),0,1) #the number of physical records included in this file including HDR and TRL records. ??? *must be equal to the number of physical record inclusive of the HDR and TRL records.
+	def fileTrailerRecord():
+		process(0,3,'TRL')
+		process(3,5,'00001') #Group Count - The number of groups included within this file. *group cout must be equal to the number of groups within the entire file. (ER)
+		process(8,8,'%s' % songCount,0,1) #Transacation Count - The number of transacations included within this file. * must be equal to the number of transacations within the entire file.
+		process(16,8,('%s' % recordCount),0,1) #the number of physical records included in this file including HDR and TRL records. ??? *must be equal to the number of physical record inclusive of the HDR and TRL records.
 
 
-def process(num1, num2, data='0', space=0, just=0):
-	def writeSpace():
-		(just and [output.write(data.rjust(num2, ' '))] or [output.write(data.ljust(num2, ' '))])[0]
-	def writeZero():
-		(just and [output.write(data.rjust(num2, '0'))] or [output.write(data.ljust(num2, '0'))])[0]
-	(space and [writeSpace()] or [writeZero()])[0]
+	def process(num1, num2, data='0', space=0, just=0):
+		def writeSpace():
+			(just and [output.write(data.rjust(num2, ' '))] or [output.write(data.ljust(num2, ' '))])[0]
+		def writeZero():
+			(just and [output.write(data.rjust(num2, '0'))] or [output.write(data.ljust(num2, '0'))])[0]
+		(space and [writeSpace()] or [writeZero()])[0]
 
-def getRecordDetail(recordNumber=0, field = ''):
-	currentRecord = allRecords[recordNumber]
-	fieldValue = currentRecord['%s' % (field)]
-	return fieldValue
+	def getRecordDetail(recordNumber=0, field = ''):
+		currentRecord = allRecords[recordNumber]
+		fieldValue = currentRecord['%s' % (field)]
+		return fieldValue
 	
-def floatSafe(value):
-	try:
-		goodValue = float(value)
-		return goodValue
-	except:
-		return 0
+	def floatSafe(value):
+		try:
+			goodValue = float(value)
+			return goodValue
+		except:
+			return 0
 		
-def processPub(recordNumber):
-	if getRecordDetail(recordNumber, 'controlled') == 'Y':
-		[process(34.5,convertPercent(recordNumber,'perfOwned'),0,1),
-		 process(39.5,convertPercent(recordNumber,'mechOwned'),0,1),
-		 process(80,38)]
-	else:
-		[process(66,7,convertPercent(recordNumber,'mechOwned'),0,1),
-		 process(73,7,convertPercent(recordNumber,'perfOwned'),0,1),
-		 process(80,12),
-		 process(92,7,convertPercent(recordNumber,'mechOwned'),0,1),
-		 process(99,7,convertPercent(recordNumber,'perfOwned'),0,1),
-		 process(106,12)]
+	def processPub(recordNumber):
+		if getRecordDetail(recordNumber, 'controlled') == 'Y':
+			[process(34.5,convertPercent(recordNumber,'perfOwned'),0,1),
+			 process(39.5,convertPercent(recordNumber,'mechOwned'),0,1),
+			 process(80,38)]
+		else:
+			[process(66,7,convertPercent(recordNumber,'mechOwned'),0,1),
+			 process(73,7,convertPercent(recordNumber,'perfOwned'),0,1),
+			 process(80,12),
+			 process(92,7,convertPercent(recordNumber,'mechOwned'),0,1),
+			 process(99,7,convertPercent(recordNumber,'perfOwned'),0,1),
+			 process(106,12)]
 
 
-def divideSongs():
-	global songCount
-	global songRecordLength
-	idList = ["%s" % (allRecords[p]['songID']) for p in range(len(allRecords))]
-	dividedIdList = [list(g) for k, g in groupby(idList)]
-	songCount = len(dividedIdList)
-	songRecordLength = [len(dividedIdList[p]) for p in range(len(dividedIdList))]
+	def divideSongs():
+		global songCount
+		global songRecordLength
+		idList = ["%s" % (allRecords[p]['songID']) for p in range(len(allRecords))]
+		dividedIdList = [list(g) for k, g in groupby(idList)]
+		songCount = len(dividedIdList)
+		songRecordLength = [len(dividedIdList[p]) for p in range(len(dividedIdList))]
 	
 
-def execute():
-	fileHeaderRecord()
-	groupHeaderRecord()
-	t = [Song(p) for p in range(songCount)]
-	groupTrailerRecord()
-	fileTrailerRecord()
+	def execute():
+		fileHeaderRecord()
+		groupHeaderRecord()
+		t = [Song(p) for p in range(songCount)]
+		groupTrailerRecord()
+		fileTrailerRecord()
 
-divideSongs()
-execute()
+	divideSongs()
+	execute()
